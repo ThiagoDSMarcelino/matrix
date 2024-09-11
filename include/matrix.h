@@ -11,12 +11,13 @@ private:
     size_t cols;
     size_t length;
 
+    size_t get_size() const;
+
 public:
     Matrix(size_t rows, size_t cols);
     Matrix(const Matrix *other);
     ~Matrix();
 
-    size_t get_size() const;
     size_t get_rows() const;
     size_t get_cols() const;
 

@@ -7,25 +7,39 @@ project(${This})
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-file(GLOB SOURCES "src/*.cpp")
+# Download GoogleTest framework
+include(FetchContent)
+FetchContent_Declare(
+  googletest
+  URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
+  DOWNLOAD_EXTRACT_TIMESTAMP true
+)
+set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+FetchContent_MakeAvailable(googletest)
 
-add_executable(${This} ${SOURCES})
+include(GoogleTest)
+
+# Getting all source files to compile
+file(GLOB SOURCES "src/*.cpp")
+file(GLOB TESTS "tests/*.cpp")
+
+add_executable(${This} ${TESTS} ${SOURCES})
 
 include_directories(include)
 
-add_custom_target(build
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${This}
-    COMMENT "Building ${This}..."
+enable_testing()
+
+gtest_discover_tests(${This})
+
+target_link_libraries(
+  ${This}
+  GTest::gtest_main
 )
 
-add_custom_target(clean_bin
-    COMMAND ${CMAKE_COMMAND} -E remove ${CMAKE_BINARY_DIR}/${This}
-    COMMENT "Cleaning ${This} executable..."
+add_custom_target(build
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${This}
 )
 
 add_custom_target(run
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target clean_bin
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${This} -- -B
     COMMAND ${CMAKE_BINARY_DIR}/${This}
-    COMMENT "Cleaning, forcing rebuild, and running ${This}..."
 )

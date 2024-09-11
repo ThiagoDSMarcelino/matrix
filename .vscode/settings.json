@@ -45,5 +45,6 @@
     "streambuf": "cpp",
     "iostream": "cpp",
     "istream": "cpp"
-  }
+  },
+  "sonarlint.pathToCompileCommands": "${workspaceFolder}/build/compile_commands.json"
 }
