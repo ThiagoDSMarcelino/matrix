@@ -1,8 +1,7 @@
-#include <stdlib.h>
 #include <stdexcept>
-#include <iostream>
 
 #include "matrix.h"
+#include "invalid_matrix_size.h"
 
 Matrix::Matrix(size_t rows, size_t cols)
 {
@@ -97,7 +96,7 @@ Matrix Matrix::operator*(const Matrix &matrix) const
 {
     if (this->cols != matrix.rows)
     {
-        throw std::logic_error("Invalid matrix multiplication");
+        throw invalid_matrix_size();
     }
 
     Matrix result(this->rows, matrix.cols);

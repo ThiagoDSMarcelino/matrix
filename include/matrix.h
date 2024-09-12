@@ -2,6 +2,7 @@
 #define MATRIX_H
 
 #include <cstddef>
+#include <stdbool.h>
 
 class Matrix
 {
