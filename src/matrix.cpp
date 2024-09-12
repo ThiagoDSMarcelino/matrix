@@ -28,14 +28,27 @@ Matrix::Matrix(const Matrix *other)
     std::copy(other->data, other->data + this->length, this->data);
 }
 
+Matrix::Matrix(std::initializer_list<std::initializer_list<double>> list)
+{
+    this->rows = list.size();
+    this->cols = list.begin()->size();
+    this->length = this->rows * this->cols;
+    this->data = (double *)malloc(sizeof(double) * this->length);
+
+    size_t index = 0;
+    for (const auto &row : list)
+    {
+        for (const auto &value : row)
+        {
+            this->data[index] = value;
+            index++;
+        }
+    }
+}
+
 Matrix::~Matrix()
 {
     free(this->data);
-}
-
-size_t Matrix::get_size() const
-{
-    return this->length;
 }
 
 size_t Matrix::get_rows() const
@@ -68,43 +81,64 @@ void Matrix::set(size_t row, size_t col, double value)
     this->data[row * this->cols + col] = value;
 }
 
-Matrix *Matrix::operator*(double value) const
+Matrix Matrix::operator*(double value) const
 {
-    Matrix *result = new Matrix(this);
+    Matrix result(this);
 
-    for (size_t i = 0; i < result->length; i++)
+    for (size_t i = 0; i < result.length; i++)
     {
-        result->data[i] *= value;
+        result.data[i] *= value;
     }
 
     return result;
 }
 
-Matrix *Matrix::operator*(Matrix *matrix) const
+Matrix Matrix::operator*(const Matrix &matrix) const
 {
-    if (this->cols != matrix->rows)
+    if (this->cols != matrix.rows)
     {
         throw std::logic_error("Invalid matrix multiplication");
     }
 
-    Matrix *result = new Matrix(this->rows, matrix->cols);
+    Matrix result(this->rows, matrix.cols);
 
     const size_t n = this->cols;
 
-    for (size_t i = 0; i < result->rows; i++)
+    for (size_t i = 0; i < result.rows; i++)
     {
-        for (size_t j = 0; j < result->cols; j++)
+        for (size_t j = 0; j < result.cols; j++)
         {
             double value = 0;
 
             for (size_t u = 0; u < n; u++)
             {
-                value += this->get(i, u) * matrix->get(u, j);
+                value += this->get(i, u) * matrix.get(u, j);
             }
 
-            result->set(i, j, value);
+            result.set(i, j, value);
         }
     }
 
     return result;
+}
+
+bool Matrix::operator==(const Matrix &matrix) const
+{
+    if (this->rows != matrix.rows || this->cols != matrix.cols)
+    {
+        return false;
+    }
+
+    for (size_t i = 0; i < this->rows; i++)
+    {
+        for (size_t j = 0; j < this->cols; j++)
+        {
+            if (this->get(i, j) != matrix.get(i, j))
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }

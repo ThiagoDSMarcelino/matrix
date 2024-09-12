@@ -35,11 +35,3 @@ target_link_libraries(
   ${This}
   GTest::gtest_main
 )
-
-add_custom_target(build
-    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target ${This}
-)
-
-add_custom_target(run
-    COMMAND ${CMAKE_BINARY_DIR}/${This}
-)
