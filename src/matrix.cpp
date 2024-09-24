@@ -60,6 +60,16 @@ size_t Matrix::get_cols() const
     return this->cols;
 }
 
+void Matrix::define(size_t row, size_t col, double value)
+{
+    this->data[row * this->cols + col] = value;
+}
+
+double Matrix::access(size_t row, size_t col) const
+{
+    return this->data[row * this->cols + col];
+}
+
 double Matrix::get(size_t row, size_t col) const
 {
     if (row >= this->rows || col >= this->cols)
@@ -67,7 +77,23 @@ double Matrix::get(size_t row, size_t col) const
         throw std::out_of_range("Index out of bounds");
     }
 
-    return this->data[row * this->cols + col];
+    return this->access(row, col);
+}
+
+Matrix Matrix::transpose() const
+{
+    Matrix transposed = new Matrix(this->cols, this->rows);
+
+    for (size_t i = 0; i < this->rows; i++)
+    {
+        for (size_t j = 0; j < this->cols; j++)
+        {
+            double value = this->access(i, j);
+            transposed.define(j, i, value);
+        }
+    }
+
+    return transposed;
 }
 
 void Matrix::set(size_t row, size_t col, double value)
@@ -77,7 +103,7 @@ void Matrix::set(size_t row, size_t col, double value)
         throw std::out_of_range("Index out of bounds");
     }
 
-    this->data[row * this->cols + col] = value;
+    this->define(row, col, value);
 }
 
 Matrix Matrix::operator*(double value) const

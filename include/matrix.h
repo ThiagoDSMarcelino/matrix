@@ -11,6 +11,8 @@ private:
     size_t rows;
     size_t cols;
     size_t length;
+    void define(size_t row, size_t col, double value);
+    double access(size_t row, size_t col) const;
 
 public:
     Matrix(size_t rows, size_t cols);
@@ -21,8 +23,10 @@ public:
     size_t get_rows() const;
     size_t get_cols() const;
 
-    double get(size_t row, size_t col) const;
     void set(size_t row, size_t col, double value);
+    double get(size_t row, size_t col) const;
+
+    Matrix transpose() const;
 
     Matrix operator*(double value) const;
     Matrix operator*(const Matrix &matrix) const;
